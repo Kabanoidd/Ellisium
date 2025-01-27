@@ -1,0 +1,76 @@
+.registration-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .registration-form div {
+    margin-bottom: 15px;
+  }
+  
+  .registration-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .registration-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .registration-form .password-toggle {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .registration-form .error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+  }
+  
+  .registration-form .buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .registration-form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .registration-form button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .registration-form button[type="reset"] {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .login-redirect {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .login-link {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .login-link:hover {
+    color: #0056b3;
+  }
