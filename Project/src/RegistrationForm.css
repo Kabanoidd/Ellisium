@@ -1,12 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+  font-family: "Golos Text", serif;
+  font-weight: 300;
+}
 .registration-form {
-    max-width: 400px;
-    margin: 0 auto;
+    max-width: 600px;
+    width: 100%;
     padding: 20px;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    height: 100%;
     background-color: #f9f9f9;
+    border: none;
+    position: absolute;
+    right: 0;
+    font-size: 18px;
+    
   }
-  
+  h2{
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 50px;
+  }
   .registration-form div {
     margin-bottom: 15px;
   }
@@ -14,18 +31,21 @@
   .registration-form label {
     display: block;
     margin-bottom: 5px;
-    font-weight: bold;
+    font-weight: 500;
+    font-size: 18px;
   }
   
   .registration-form input {
+    max-width: 300px;
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 10px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    border-radius: 10px;
   }
   
   .registration-form .password-toggle {
-    margin-left: 10px;
     background: none;
     border: none;
     cursor: pointer;
@@ -41,6 +61,7 @@
   .registration-form .buttons {
     display: flex;
     justify-content: space-between;
+    margin-top: 50px;
   }
   
   .registration-form button {
@@ -48,21 +69,44 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 18px;
   }
   
   .registration-form button[type="submit"] {
-    background-color: #28a745;
-    color: white;
+    color: #2B2B2B;
+    border: 1px solid #2B2B2B;
+    background: none;
+    border-radius: 10px;
+    width: 150px;
+    height: 50px;
+    text-align: center;
+    transition: .3s;
   }
   
   .registration-form button[type="reset"] {
-    background-color: #dc3545;
-    color: white;
+    background-color: #2B2B2B;
+    color: #f9f9f9;
+    border-radius: 10px;
+    width: 150px;
+    height: 50px;
+    text-align: center;    
+    transition: .3s;
   }
-  
+  .registration-form button[type="submit"]:hover{
+    color: #f9f9f9;
+    background-color: #2B2B2B;
+    border: none;
+  }
+  .registration-form button[type="reset"]:hover{
+    color: #2B2B2B;
+    background-color: #f9f9f9;
+    border: 1px solid #2B2B2B;
+
+  }
   .login-redirect {
     margin-top: 20px;
     text-align: center;
+    font-size: 14px;
   }
   
   .login-link {
@@ -73,4 +117,57 @@
   
   .login-link:hover {
     color: #0056b3;
+  }
+  .inp_pass{
+    display: flex;
+    gap: 10px;
+  }
+  .video-background {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+  }
+  
+  .content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+  }
+  .for_all{
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .form_auto{
+    background-color: #f9f9f9;
+    position: absolute;
+    right: 0;
+    max-width: 600px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .mail_auto input{
+    width: 300px;
+    background-color: white;
+    border: none;
+    height: 40px;
+    border-radius: 10px;
+
   }

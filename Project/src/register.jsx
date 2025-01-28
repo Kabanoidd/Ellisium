@@ -3,6 +3,8 @@ import InputMask from "react-input-mask";
 import validator from "validator";
 import { useNavigate } from "react-router-dom"; // Импортируем useNavigate
 import "./RegistrationForm.css"; // Подключаем стили
+import video from '../public/bg.mp4'
+import pass from '../public/pass.png'
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -94,8 +96,15 @@ const Register = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={handleReset} className="registration-form">
-      <div>
+    <div className="video-background">
+        <video autoPlay loop muted className="video">
+        <source src={video} type="video/mp4" />
+        Ваш браузер не поддерживает видео тег.
+      </video>
+          <form onSubmit={handleSubmit} onReset={handleReset} className="registration-form">
+            <h2>Регистрация</h2>
+            <div className="for_all">
+               <div>
         <label>Имя:</label>
         <input
           type="text"
@@ -131,8 +140,8 @@ const Register = () => {
         {errors.phone && <span className="error">{errors.phone}</span>}
       </div>
 
-      <div>
-        <label>Пароль:</label>
+      <label>Пароль:</label>
+      <div className="inp_pass">
         <input
           type={showPassword ? "text" : "password"}
           name="password"
@@ -145,13 +154,15 @@ const Register = () => {
           onClick={togglePasswordVisibility}
           className="password-toggle"
         >
-          {showPassword ? "🙈" : "👁️"}
+          {showPassword ? <img src={pass}/> : <img src={pass}/>}
         </button>
+        </div>
         {errors.password && <span className="error">{errors.password}</span>}
-      </div>
+      
 
-      <div>
-        <label>Подтвердите пароль:</label>
+      <label>Подтвердите пароль:</label>
+      <div className="inp_pass">
+        
         <input
           type={showConfirmPassword ? "text" : "password"}
           name="confirmPassword"
@@ -164,13 +175,13 @@ const Register = () => {
           onClick={toggleConfirmPasswordVisibility}
           className="password-toggle"
         >
-          {showConfirmPassword ? "🙈" : "👁️"}
+          {showConfirmPassword ? <img src={pass}/> : <img src={pass}/>}
         </button>
+        </div>
         {errors.confirmPassword && (
           <span className="error">{errors.confirmPassword}</span>
         )}
-      </div>
-
+  
       <div className="buttons">
         <button type="submit">Регистрация</button>
         <button type="reset">Отмена</button>
@@ -184,7 +195,11 @@ const Register = () => {
           </span>
         </p>
       </div>
+            </div>
+     
     </form>
+    </div>
+
   );
 };
 
