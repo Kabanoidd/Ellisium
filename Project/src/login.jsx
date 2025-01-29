@@ -23,14 +23,15 @@ const LoginForm = () => {
     };
 
     return (
-        <div className="video-background">
+        <div className="video-background auto">
             <video autoPlay loop muted className="video">
                 <source src={video} type="video/mp4" />
                 Ваш браузер не поддерживает видео тег.
             </video>
             <form onSubmit={handleLogin} className='form_auto'>
                 <h2>Авторизация</h2>
-                <div className='mail_auto'>
+                <div className="for_all">
+                                  <div className='mail_auto'>
                     <label>Email</label>
                     <input
                         type="email"
@@ -41,6 +42,7 @@ const LoginForm = () => {
                 </div>
                 <div className='mail_auto'> 
                     <label>Password</label>
+                    <div className='auto_pass'>
                     <input
                         type={showPassword ? 'text' : 'password'}
                         value={password}
@@ -50,16 +52,25 @@ const LoginForm = () => {
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        style={{ marginLeft: '10px' }}
+                        className='auto_vis'
                     >
                         {showPassword ? <img src={pass}/> : <img src={pass}/>}
                     </button>
+                    </div>
+
                 </div>
-                <button type="submit" style={{ width: '100%', padding: '10px', margin: '10px 0' }}>
+                <div>
+                <button type="submit" className=''>
                     Войти
                 </button>
+                <button type="submit">
+                    Отмена
+                </button>
+                </div>
                 {message && <p>{message}</p>}
-            <p>У вас еще нет аккаунта? <a href="/">Регистрация</a></p>
+            <p>У вас еще нет аккаунта? <a href="/">Регистрация</a></p>  
+                </div>
+
             </form>
         </div>
     );

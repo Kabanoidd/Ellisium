@@ -60,13 +60,33 @@ const Register = () => {
   };
 
   // Обработчик отправки формы
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
+      try {
+        const response = await fetch("http://localhost:3001/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+    
+        const result = await response.json();
+        if (response.ok) {
+          console.log("Пользователь успешно зарегистрирован:", result);
+          // Перенаправление на страницу авторизации или другую страницу
+          navigate("/login");
+        } else {
+          console.error("Ошибка при регистрации:", result.message);
+        }
+      } catch (error) {
+        console.error("Ошибка при отправке данных:", error);
+      }
       console.log("Форма отправлена:", formData);
       // Здесь можно отправить данные на сервер
     }
-  };
+    };
 
   // Обработчик очистки формы
   const handleReset = () => {
@@ -94,7 +114,6 @@ const Register = () => {
   const handleLoginRedirect = () => {
     navigate("/login"); // Перенаправление на страницу авторизации
   };
-
   return (
     <div className="video-background">
         <video autoPlay loop muted className="video">

@@ -73,6 +73,16 @@
   }
   
   .registration-form button[type="submit"] {
+    background-color: #2B2B2B;
+    color: #f9f9f9;
+    border-radius: 10px;
+    width: 150px;
+    height: 50px;
+    text-align: center;    
+    transition: .5s;
+  }
+  
+  .registration-form button[type="reset"] {
     color: #2B2B2B;
     border: 1px solid #2B2B2B;
     background: none;
@@ -80,28 +90,17 @@
     width: 150px;
     height: 50px;
     text-align: center;
-    transition: .3s;
-  }
-  
-  .registration-form button[type="reset"] {
-    background-color: #2B2B2B;
-    color: #f9f9f9;
-    border-radius: 10px;
-    width: 150px;
-    height: 50px;
-    text-align: center;    
-    transition: .3s;
+    transition: .5s;
   }
   .registration-form button[type="submit"]:hover{
-    color: #f9f9f9;
-    background-color: #2B2B2B;
-    border: none;
-  }
-  .registration-form button[type="reset"]:hover{
     color: #2B2B2B;
     background-color: #f9f9f9;
     border: 1px solid #2B2B2B;
-
+  }
+  .registration-form button[type="reset"]:hover{
+    color: #f9f9f9;
+    background-color: #2B2B2B;
+    border: none;
   }
   .login-redirect {
     margin-top: 20px;
@@ -150,7 +149,6 @@
     max-width: 400px;
     margin: 0 auto;
   }
-
   .form_auto{
     background-color: #f9f9f9;
     position: absolute;
@@ -161,13 +159,27 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    align-items: center;
   }
 
   .mail_auto input{
     width: 300px;
     background-color: white;
     border: none;
-    height: 40px;
     border-radius: 10px;
-
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+    font-size: 16px;
+    outline: none;  
+  }
+  .auto_pass{
+    display: flex;
+    gap: 10px;
+  }
+  .auto_vis{
+    background-color: #f9f9f9;
+    border: none;
+    outline: none;
+    cursor: pointer;
   }
