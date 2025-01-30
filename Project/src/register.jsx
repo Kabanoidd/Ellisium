@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import InputMask from "react-input-mask";
 import validator from "validator";
-import { useNavigate } from "react-router-dom"; // Импортируем useNavigate
-import "./RegistrationForm.css"; // Подключаем стили
-import video from '../public/bg.mp4'
-import pass from '../public/pass.png'
+import { useNavigate } from "react-router-dom";
+import "./css/RegistrationForm.css";
+import pass from '../public/pass.png';
+import unpass from '../public/unpass.png'; // Импортируем новую иконку
+import bg from '../public/bg.jpg';
+import CryptoJS from "crypto-js"; // Добавляем импорт CryptoJS
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -17,10 +19,11 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
 
-  const navigate = useNavigate(); // Хук для навигации
+  const navigate = useNavigate();
+  const phoneInputRef = useRef(null);
 
-  // Обработчик изменения полей
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -29,7 +32,6 @@ const Register = () => {
     });
   };
 
-  // Валидация формы
   const validateForm = () => {
     const newErrors = {};
 
@@ -59,23 +61,55 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Обработчик отправки формы
+  const checkPasswordSafety = async (password) => {
+    const hash = CryptoJS.SHA1(password).toString(CryptoJS.enc.Hex).toUpperCase();
+    const prefix = hash.slice(0, 5);
+    const suffix = hash.slice(5);
+
+    try {
+      const response = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
+      const data = await response.text();
+
+      if (data.includes(suffix)) {
+        return false; // Пароль скомпрометирован
+      }
+      return true; // Пароль безопасен
+    } catch (error) {
+      console.error("Ошибка при проверке пароля:", error);
+      return true; // В случае ошибки считаем пароль безопасным
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await fetch("http://localhost:3001/register", {
+        const isPasswordSafe = await checkPasswordSafety(formData.password);
+        if (!isPasswordSafe) {
+          setPasswordError("Этот пароль был скомпрометирован. Пожалуйста, выберите другой.");
+          return;
+        }
+
+        setPasswordError("");
+
+        const userData = {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password, // Отправляем пароль в его обычной форме
+        };
+
+        const response = await fetch("http://localhost:3001/api/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(userData),
         });
-    
+
         const result = await response.json();
         if (response.ok) {
           console.log("Пользователь успешно зарегистрирован:", result);
-          // Перенаправление на страницу авторизации или другую страницу
           navigate("/login");
         } else {
           console.error("Ошибка при регистрации:", result.message);
@@ -83,142 +117,84 @@ const Register = () => {
       } catch (error) {
         console.error("Ошибка при отправке данных:", error);
       }
-      console.log("Форма отправлена:", formData);
-      // Здесь можно отправить данные на сервер
     }
-    };
+  };
 
-  // Обработчик очистки формы
   const handleReset = () => {
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      password: "",
-      confirmPassword: "",
-    });
-    setErrors({});
+    navigate("/");
   };
 
-  // Переключение видимости пароля
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  // Переключение видимости подтверждения пароля
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
-
-  // Переход на страницу авторизации
-  const handleLoginRedirect = () => {
-    navigate("/login"); // Перенаправление на страницу авторизации
-  };
   return (
     <div className="video-background">
-        <video autoPlay loop muted className="video">
-        <source src={video} type="video/mp4" />
-        Ваш браузер не поддерживает видео тег.
-      </video>
-          <form onSubmit={handleSubmit} onReset={handleReset} className="registration-form">
-            <h2>Регистрация</h2>
-            <div className="for_all">
-               <div>
-        <label>Имя:</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Введите ваше имя"
-        />
-        {errors.name && <span className="error">{errors.name}</span>}
-      </div>
+      <img src={bg} alt="" className="video"/>
+      <form onSubmit={handleSubmit} className="registration-form">
+        <h2>Регистрация</h2>
+        <div className="for_all">
+          <div>
+            <label>Имя:</label>
+            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Введите ваше имя"/>
+            {errors.name && <span className="error">{errors.name}</span>}
+          </div>
 
-      <div>
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Введите ваш email"
-        />
-        {errors.email && <span className="error">{errors.email}</span>}
-      </div>
+          <div>
+            <label>Email:</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Введите ваш email"/>
+            {errors.email && <span className="error">{errors.email}</span>}
+          </div>
 
-      <div>
-        <label>Телефон:</label>
-        <InputMask
-          mask="+7-999-999-99-99"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          placeholder="+7-___-___-__-__"
-        />
-        {errors.phone && <span className="error">{errors.phone}</span>}
-      </div>
+          <div>
+            <label>Телефон:</label>
+            <InputMask
+              mask="+7-999-999-99-99"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="+7-___-___-__-__"
+              ref={phoneInputRef}
+            />
+            {errors.phone && <span className="error">{errors.phone}</span>}
+          </div>
 
-      <label>Пароль:</label>
-      <div className="inp_pass">
-        <input
-          type={showPassword ? "text" : "password"}
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Введите пароль"
-        />
-        <button
-          type="button"
-          onClick={togglePasswordVisibility}
-          className="password-toggle"
-        >
-          {showPassword ? <img src={pass}/> : <img src={pass}/>}
-        </button>
+          <label>Пароль:</label>
+          <div className="inp_pass">
+            <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} placeholder="Введите пароль"/>
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="password-toggle">
+              {/* Условный рендеринг иконки */}
+              {showPassword ? (
+                <img src={unpass} alt="hide password"/>
+              ) : (
+                <img src={pass} alt="show password"/>
+              )}
+            </button>
+          </div>
+          {errors.password && <span className="error">{errors.password}</span>}
+          {passwordError && <span className="error">{passwordError}</span>}
+
+          <label>Подтвердите пароль:</label>
+          <div className="inp_pass">
+            <input type={showConfirmPassword ? "text" : "password"} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Подтвердите пароль"/>
+            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="password-toggle">
+              {/* Условный рендеринг иконки */}
+              {showConfirmPassword ? (
+                <img src={unpass} alt="hide confirm password"/>
+              ) : (
+                <img src={pass} alt="show confirm password"/>
+              )}
+            </button>
+          </div>
+          {errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
+
+          <div className="buttons">
+            <button type="submit">Регистрация</button>
+            <button type="reset" onClick={handleReset}>Отмена</button>
+          </div>
+
+          <div className="login-redirect">
+            <p>У вас уже есть аккаунт? <span onClick={() => navigate("/login")} className="login-link">Авторизация</span></p>
+          </div>
         </div>
-        {errors.password && <span className="error">{errors.password}</span>}
-      
-
-      <label>Подтвердите пароль:</label>
-      <div className="inp_pass">
-        
-        <input
-          type={showConfirmPassword ? "text" : "password"}
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          placeholder="Подтвердите пароль"
-        />
-        <button
-          type="button"
-          onClick={toggleConfirmPasswordVisibility}
-          className="password-toggle"
-        >
-          {showConfirmPassword ? <img src={pass}/> : <img src={pass}/>}
-        </button>
-        </div>
-        {errors.confirmPassword && (
-          <span className="error">{errors.confirmPassword}</span>
-        )}
-  
-      <div className="buttons">
-        <button type="submit">Регистрация</button>
-        <button type="reset">Отмена</button>
-      </div>
-
-      <div className="login-redirect">
-        <p>
-          У вас уже есть аккаунт?{" "}
-          <span onClick={handleLoginRedirect} className="login-link">
-            Авторизация
-          </span>
-        </p>
-      </div>
-            </div>
-     
-    </form>
+      </form>
     </div>
-
   );
 };
 
