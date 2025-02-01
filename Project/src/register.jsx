@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import InputMask from "react-input-mask";
 import validator from "validator";
 import { useNavigate } from "react-router-dom";
@@ -20,9 +20,29 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const [isAgreed, setIsAgreed] = useState(false); // Состояние для чекбокса
 
   const navigate = useNavigate();
   const phoneInputRef = useRef(null);
+
+  // Проверка авторизации при загрузке компонента
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/api/me", {
+          credentials: "include", // Включаем отправку куки
+        });
+        const data = await response.json();
+        if (data.user) {
+          navigate("/"); // Если пользователь авторизован, перенаправляем на главную страницу
+        }
+      } catch (error) {
+        console.error("Ошибка при проверке авторизации:", error);
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,6 +50,10 @@ const Register = () => {
       ...formData,
       [name]: value,
     });
+  };
+
+  const handleAgreementChange = (e) => {
+    setIsAgreed(e.target.checked); // Обновляем состояние чекбокса
   };
 
   const validateForm = () => {
@@ -55,6 +79,10 @@ const Register = () => {
 
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Пароли не совпадают";
+    }
+
+    if (!isAgreed) {
+      newErrors.agreement = "Необходимо согласие на обработку данных"; // Ошибка, если чекбокс не отмечен
     }
 
     setErrors(newErrors);
@@ -99,7 +127,7 @@ const Register = () => {
           password: formData.password, // Отправляем пароль в его обычной форме
         };
 
-        const response = await fetch("http://localhost:3001/api/register", {
+        const response = await fetch("http://localhost:3002/api/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -159,7 +187,6 @@ const Register = () => {
           <div className="inp_pass">
             <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} placeholder="Введите пароль"/>
             <button type="button" onClick={() => setShowPassword(!showPassword)} className="password-toggle">
-              {/* Условный рендеринг иконки */}
               {showPassword ? (
                 <img src={unpass} alt="hide password"/>
               ) : (
@@ -174,7 +201,6 @@ const Register = () => {
           <div className="inp_pass">
             <input type={showConfirmPassword ? "text" : "password"} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Подтвердите пароль"/>
             <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="password-toggle">
-              {/* Условный рендеринг иконки */}
               {showConfirmPassword ? (
                 <img src={unpass} alt="hide confirm password"/>
               ) : (
@@ -183,6 +209,19 @@ const Register = () => {
             </button>
           </div>
           {errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
+
+          {/* Чекбокс согласия */}
+          <div className="agreement-checkbox">
+            <label>
+              <input
+                type="checkbox"
+                checked={isAgreed}
+                onChange={handleAgreementChange}
+              />
+              Я согласен(на) с <a href="#" className="login-link">условиями на обработку данных</a>
+            </label>
+            {errors.agreement && <span className="error">{errors.agreement}</span>}
+          </div>
 
           <div className="buttons">
             <button type="submit">Регистрация</button>

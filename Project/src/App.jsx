@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Register from "./register"; // Импортируем компонент регистрации
 import Login from "./login"; // Импортируем компонент авторизации
 import Index from "./index"; 
-
+import Acc from "./account"; 
 function App() {
   const [user, setUser] = useState(null);
 
@@ -31,6 +31,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Index />} />
+          <Route path="/acc" element={<Acc />} />
         </Routes>
       </div>
     </Router>

@@ -34,6 +34,6 @@ app.use(session({
 app.use("/api", routes); // Теперь все маршруты будут начинаться с /api
 
 // Запуск сервера
-app.listen(3001, () => {
-  console.log("Server running on port 3001");
+app.listen(3002, () => {
+  console.log("Server running on port 3002");
 });
