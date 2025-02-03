@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./css/index.css";
-import bg from '../public/BGmain.png';
+import "./css/profile.css";
 import hm from '../public/home.png';
 import sh from '../public/shop.png';
 import sub from '../public/sub.png';
 import acc from '../public/account.png';
 import plus from '../public/plus.png';
-import pluss from '../public/pluss.png';
+import prof from '../public/profile.png';
+import ed from '../public/edit.png';
 
 const Acc = () => {
   const [user, setUser] = useState(null);
@@ -51,7 +52,7 @@ const Acc = () => {
   };
 
   return (
-    <div className="all">
+    <div className="all all_acc">
       {user && (
         <div className="panel">
           <ul className="imgs">
@@ -64,12 +65,43 @@ const Acc = () => {
         </div>
       )}
       <div className="container">
-        {/* Кнопка для выхода из сессии */}
-        {user && (
-          <button className="logout-button" onClick={handleLogout}>
-            Выйти
+        <div className="data">
+          <div className="img_acc">
+            <img src={prof} alt="" />
+          </div>
+          <div className="mail">
+            <p>Почта</p>
+            <p className="email_fromBD fromBD">{user?.email}</p> {/* Выводим почту */}
+            <img src={ed} alt="" />
+          </div>
+          <div className="name">
+            <p>Имя</p>
+            <p className="name_fromBD fromBD">{user?.name}</p> {/* Выводим имя */}
+            <img src={ed} alt="" />
+          </div>
+          <div className="sub">
+            <p>Уровень подписки</p>
+            <p className="sub_fromBD fromBD">{user?.status_sub}</p> {/* Выводим статус подписки */}
+            <img src={sub} alt="" />
+          </div>
+          <div className="my_project">
+            <p>Мои проекты</p>
+          </div>
+          <div className="support">
+            <p>Поддержка</p>
+          </div>
+        </div>
+        <div className="profile_btn">
+          <button className="ed_pass">
+            Изменить пароль
           </button>
-        )}
+          {/* Кнопка для выхода из сессии */}
+          {user && (
+            <button className="logout-button" onClick={handleLogout}>
+              Выйти
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   password: { type: String, required: true },
   role: { type: String, default: 'user' },
+  status_sub: { type: String, default: "Гость" },
 });
 
 const User = mongoose.model('User', userSchema);

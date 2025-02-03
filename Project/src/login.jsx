@@ -71,8 +71,6 @@ const Login = () => {
       if (!response.ok) {
         throw new Error(data.message || "Ошибка авторизации");
       }
-
-      alert("Вы успешно вошли!");
       navigate("/"); // Перенаправляем на главную страницу после успешного входа
     } catch (error) {
       console.error("Ошибка авторизации:", error.message);

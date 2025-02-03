@@ -5,7 +5,7 @@ const router = express.Router();
 
 // 📌 Регистрация пользователя
   router.post("/register", async (req, res) => {
-    const { name, email, phone, password } = req.body;
+    const { name, email, phone, password,} = req.body;
 
     try {
       // Проверка существования пользователя
@@ -60,6 +60,9 @@ router.post("/login", async (req, res) => {
       id: user._id,
       name: user.name,
       role: user.role, // Добавляем роль пользователя в сессию
+      email: user.email,
+      status_sub: user.status_sub,
+
     };
 
     res.json({ message: "Успешный вход" });
