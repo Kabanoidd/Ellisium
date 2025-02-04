@@ -4,9 +4,9 @@ import validator from "validator";
 import { useNavigate } from "react-router-dom";
 import "./css/RegistrationForm.css";
 import pass from '../public/pass.png';
-import unpass from '../public/unpass.png'; // Импортируем новую иконку
+import unpass from '../public/unpass.png';
 import bg from '../public/bg.jpg';
-import CryptoJS from "crypto-js"; // Добавляем импорт CryptoJS
+import CryptoJS from "crypto-js";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -20,21 +20,23 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
-  const [isAgreed, setIsAgreed] = useState(false); // Состояние для чекбокса
+  const [isAgreed, setIsAgreed] = useState(false);
+  const [confirmationCode, setConfirmationCode] = useState("");
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [verificationError, setVerificationError] = useState("");
 
   const navigate = useNavigate();
   const phoneInputRef = useRef(null);
 
-  // Проверка авторизации при загрузке компонента
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const response = await fetch("http://localhost:3002/api/me", {
-          credentials: "include", // Включаем отправку куки
+          credentials: "include",
         });
         const data = await response.json();
         if (data.user) {
-          navigate("/"); // Если пользователь авторизован, перенаправляем на главную страницу
+          navigate("/");
         }
       } catch (error) {
         console.error("Ошибка при проверке авторизации:", error);
@@ -53,7 +55,7 @@ const Register = () => {
   };
 
   const handleAgreementChange = (e) => {
-    setIsAgreed(e.target.checked); // Обновляем состояние чекбокса
+    setIsAgreed(e.target.checked);
   };
 
   const validateForm = () => {
@@ -82,7 +84,7 @@ const Register = () => {
     }
 
     if (!isAgreed) {
-      newErrors.agreement = "Необходимо согласие на обработку данных"; // Ошибка, если чекбокс не отмечен
+      newErrors.agreement = "Необходимо согласие на обработку данных";
     }
 
     setErrors(newErrors);
@@ -99,12 +101,12 @@ const Register = () => {
       const data = await response.text();
 
       if (data.includes(suffix)) {
-        return false; // Пароль скомпрометирован
+        return false;
       }
-      return true; // Пароль безопасен
+      return true;
     } catch (error) {
       console.error("Ошибка при проверке пароля:", error);
-      return true; // В случае ошибки считаем пароль безопасным
+      return true;
     }
   };
 
@@ -124,7 +126,7 @@ const Register = () => {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          password: formData.password, // Отправляем пароль в его обычной форме
+          password: formData.password,
         };
 
         const response = await fetch("http://localhost:3002/api/register", {
@@ -137,8 +139,9 @@ const Register = () => {
 
         const result = await response.json();
         if (response.ok) {
-          console.log("Пользователь успешно зарегистрирован:", result);
-          navigate("/login");
+          // Если регистрация успешна (данные сохранены во временном хранилище, а код отправлен)
+          setShowConfirmationModal(true);
+          setVerificationError("");
         } else {
           console.error("Ошибка при регистрации:", result.message);
         }
@@ -148,25 +151,73 @@ const Register = () => {
     }
   };
 
+  const handleVerifyCode = async () => {
+    try {
+      const response = await fetch("http://localhost:3002/api/verify-code", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: formData.email, code: confirmationCode }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        navigate("/login");
+      } else {
+        setVerificationError(result.message || "Ошибка при проверке кода");
+        console.error("Ошибка при проверке кода:", result.message);
+      }
+    } catch (error) {
+      setVerificationError("Ошибка при отправке кода");
+      console.error("Ошибка при отправке кода:", error);
+    }
+  };
+
+  // Функция для отмены регистрации
+  const handleCancelRegistration = async () => {
+    try {
+      const response = await fetch("http://localhost:3002/api/cancel-registration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: formData.email }),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setShowConfirmationModal(false);
+        // Можно, например, сбросить форму или перейти на другую страницу
+        navigate("/");
+      } else {
+        setVerificationError(result.message || "Ошибка при отмене регистрации");
+        console.error("Ошибка при отмене регистрации:", result.message);
+      }
+    } catch (error) {
+      setVerificationError("Ошибка при отмене регистрации");
+      console.error("Ошибка при отмене регистрации:", error);
+    }
+  };
+
   const handleReset = () => {
     navigate("/");
   };
 
   return (
     <div className="video-background">
-      <img src={bg} alt="" className="video"/>
+      <img src={bg} alt="" className="video" />
       <form onSubmit={handleSubmit} className="registration-form">
         <h2>Регистрация</h2>
         <div className="for_all">
           <div>
             <label>Имя:</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Введите ваше имя"/>
+            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Введите ваше имя" />
             {errors.name && <span className="error">{errors.name}</span>}
           </div>
 
           <div>
             <label>Email:</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Введите ваш email"/>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Введите ваш email" />
             {errors.email && <span className="error">{errors.email}</span>}
           </div>
 
@@ -185,13 +236,9 @@ const Register = () => {
 
           <label>Пароль:</label>
           <div className="inp_pass">
-            <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} placeholder="Введите пароль"/>
+            <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} placeholder="Введите пароль" />
             <button type="button" onClick={() => setShowPassword(!showPassword)} className="password-toggle">
-              {showPassword ? (
-                <img src={unpass} alt="hide password"/>
-              ) : (
-                <img src={pass} alt="show password"/>
-              )}
+              {showPassword ? <img src={unpass} alt="hide password" /> : <img src={pass} alt="show password" />}
             </button>
           </div>
           {errors.password && <span className="error">{errors.password}</span>}
@@ -199,25 +246,16 @@ const Register = () => {
 
           <label>Подтвердите пароль:</label>
           <div className="inp_pass">
-            <input type={showConfirmPassword ? "text" : "password"} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Подтвердите пароль"/>
+            <input type={showConfirmPassword ? "text" : "password"} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Подтвердите пароль" />
             <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="password-toggle">
-              {showConfirmPassword ? (
-                <img src={unpass} alt="hide confirm password"/>
-              ) : (
-                <img src={pass} alt="show confirm password"/>
-              )}
+              {showConfirmPassword ? <img src={unpass} alt="hide confirm password" /> : <img src={pass} alt="show confirm password" />}
             </button>
           </div>
           {errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
 
-          {/* Чекбокс согласия */}
           <div className="agreement-checkbox">
             <label>
-              <input
-                type="checkbox"
-                checked={isAgreed}
-                onChange={handleAgreementChange}
-              />
+              <input type="checkbox" checked={isAgreed} onChange={handleAgreementChange} />
               Я согласен(на) с <a href="#" className="login-link">условиями на обработку данных</a>
             </label>
             {errors.agreement && <span className="error">{errors.agreement}</span>}
@@ -229,10 +267,35 @@ const Register = () => {
           </div>
 
           <div className="login-redirect">
-            <p>У вас уже есть аккаунт? <span onClick={() => navigate("/login")} className="login-link">Авторизация</span></p>
+            <p>
+              У вас уже есть аккаунт? <span onClick={() => navigate("/login")} className="login-link">Авторизация</span>
+            </p>
           </div>
         </div>
       </form>
+
+      {showConfirmationModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Введите код подтверждения</h3>
+            <input
+              type="text"
+              value={confirmationCode}
+              onChange={(e) => setConfirmationCode(e.target.value)}
+              placeholder="Код подтверждения"
+            />
+            <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+              <button onClick={handleVerifyCode}>Подтвердить</button>
+              <button onClick={handleCancelRegistration}>Отмена регистрации</button>
+            </div>
+            {verificationError && (
+              <span className="error" style={{ display: "block", marginTop: "10px" }}>
+                {verificationError}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

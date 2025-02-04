@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { type: String, default: 'user' },
   status_sub: { type: String, default: "Гость" },
+  confirmationCode: { type: String },
+  confirmationCodeExpires: { type: Date },
 });
 
 const User = mongoose.model('User', userSchema);
