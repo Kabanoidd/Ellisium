@@ -1,0 +1,104 @@
+.all {
+    position: relative;
+  }
+  
+  .first_screen img {
+    position: absolute;
+    z-index: -1;
+    height: 1000px;
+    width: 100%;
+  }
+  
+  .container {
+    max-width: 1520px;
+    margin: 0 auto;
+    position: relative;
+    padding-left: 100px; /* Отступ слева для основного контента */
+  }
+  
+  .panel {
+    display: flex;
+    flex-direction: column;
+    position: fixed; /* Фиксированное позиционирование */
+    left: 0; /* Закрепляем слева */
+    top: 0; /* Закрепляем сверху */
+    background-color: white;
+    height: 100vh; /* Высота на весь экран */
+    z-index: 1000; /* Убедитесь, что панель выше других элементов */
+    width: 80px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .imgs {
+    display: flex;
+    flex-direction: column;
+    gap: 45px;
+    list-style: none;
+  }
+  
+  .panel img {
+    height: 35px;
+    width: 35px;
+    cursor: pointer;
+  }
+  
+  h1 {
+    color: #2b2b2b;
+    font-size: 220px;
+  }
+  
+  .text {
+    max-width: 930px;
+    text-align: right;
+    position: absolute;
+    right: 0;
+  }
+  
+  .text p {
+    font-size: 30px;
+    margin-top: 30px;
+  }
+
+  .buttonss {
+    display: flex;
+    gap: 15px;
+    padding-top: 650px;
+  }
+  
+  .buttonss button {
+    font-size: 18px;
+    max-width: 200px;
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    cursor: pointer;
+    outline: none;
+    border-radius: 10px;
+    transition: 0.3s;
+  }
+  
+  .buttonss button:hover {
+    border-radius: 0px;
+  }
+  
+  .create {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+  }
+  
+  .reg {
+    border: 1px solid #2b2b2b;
+    background-color: white;
+    color: #2b2b2b;
+  }
+  
+  .auth,
+  .create {
+    background-color: #2b2b2b;
+    color: white;
+    outline: none;
+    border: 1px solid transparent;
+  }

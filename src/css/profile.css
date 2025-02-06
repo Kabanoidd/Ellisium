@@ -1,0 +1,87 @@
+.all_acc{
+    background-color: #F9F9F9;
+    height: 100vh;
+    color: #2b2b2b;
+    font-size: 22px;
+    padding-top: 100px;
+}
+.img_acc{
+    cursor: pointer;
+    width: 200px;
+    height: 200px;
+}
+.fromBD{
+    font-size: 18px;
+    text-decoration: underline;
+}
+.ed_pass{
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: #2b2b2b;
+    color: #F9F9F9;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    transition: .3s;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+.ed_pass:hover{
+    border-radius: 0px;
+    border: 1px solid #2b2b2b;
+    background-color: transparent;
+    color: #2b2b2b;
+}
+
+.logout-button{
+    padding: 10px 15px;
+    background-color: transparent;
+    border: 1px solid #2b2b2b;
+    outline: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 10px;
+    transition: .3s;
+}
+.logout-button:hover{
+    border-radius: 0px;
+    background-color: #2b2b2b;
+    color: #F9F9F9;
+    border: 1px solid #2b2b2b;
+}
+.name, .mail, .sub{
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.name, .mail, .sub img{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.data{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.profile_btn{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 20px;
+    max-width: 200px;
+}
+.my_project p{
+    cursor: pointer;
+    transition: .3s;
+}
+.my_project p:hover{
+    color: #2b2b2b8a;
+}
+.support p{
+    cursor: pointer;
+    transition: .3s;
+}
+.support p:hover{
+    color: #2b2b2b8a;
+}
