@@ -1,0 +1,164 @@
+/* Контейнер для карточек: 3 в ряд, с вертикальным отступом 50px между строками */
+.market-blocks-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;       /* расстояние между карточками по горизонтали */
+    row-gap: 50px;   /* вертикальный отступ между строками */
+    padding: 10px;
+
+  width: 100%;
+  height: auto;         /* Автоматическая высота */
+  overflow: visible;    
+  }
+  
+  .market-block-card {
+    width: 350px;
+    height: 250px;
+    position: relative;
+    background-color: #fff;
+    transition: .3s;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .market-block-card:hover{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    transform: scale(1.01);
+  }
+  
+  
+  /* Превью-изображение */
+  .market-block-image {
+    width: 350px;
+    height: 200px; /* уменьшена до 200px */
+    background-color: #333;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    position: absolute;
+    transition: transform 0.3s;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px; 
+  }
+  
+  /* Название блока (снизу, в 50px оставшихся) */
+  .market-block-name {
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+    font-size: 18px;
+    margin: 0;
+  }
+  .more{
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+  }
+  /* Кнопка "Добавить" */
+  .market-block-add {
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    cursor: pointer;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background-color: #333;
+    color: #fff;
+    transition: background-color 0.3s;
+  }
+  
+  /* Пагинация */
+  .pagination {
+    margin-top: 30px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .pagination button {
+    cursor: pointer;
+    padding: 6px 12px;
+  }
+  
+
+  .block-details-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  
+  .block-details-modal {
+    background: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    width: 1700px;
+    height: auto;
+    overflow-y: auto;
+  }
+
+  .modal-close {
+    border: none;
+    background: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-size: 18px;
+  }
+  .modal-body h3{
+    font-size: 30px;
+
+  }
+  .modal-preview-image {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  
+  .author-info {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .author-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .modal-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .modal-actions button {
+    cursor: pointer;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #333;
+    color: #fff;
+    transition: background-color 0.3s;
+  }
+  
+  .modal-actions button:hover {
+    background-color: #555;
+  }
+  

@@ -5,7 +5,13 @@ import Login from "./login"; // Импортируем компонент авт
 import Index from "./index"; 
 import Acc from "./account"; 
 import BlockEditor from "./create";
-import BlockConstructorPage from "./BlockConstructorPage";
+import BlockViewer from "./BlockConstructorPage";
+import GlobalCreating from "./GlobalCreate";
+import PreviewPage from "./forRender/PreviewPage";
+import ProjectEditor from "./forRender/ProjectEditor";
+import BlockList from "./BlockList";
+import MarketBlocks from "./MarketBlock";
+
 function App() {
   const [user, setUser] = useState(null);
 
@@ -35,7 +41,12 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="/acc" element={<Acc />} />
           <Route path="/create" element={<BlockEditor />} />
-          <Route path="/ren" element={<BlockConstructorPage />} />
+          <Route path="/ren" element={<BlockViewer />} />
+          <Route path="/glob" element={<GlobalCreating />} />
+          <Route path="/prev" element={<PreviewPage />} />
+          <Route path="/project-edit/:id" element={<ProjectEditor />} />
+          <Route path="/bl" element={<BlockList />} />
+          <Route path="/market" element={<MarketBlocks />} />
         </Routes>
       </div>
     </Router>

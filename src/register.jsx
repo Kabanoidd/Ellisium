@@ -328,7 +328,7 @@ const Register = () => {
             />
             <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
               <button onClick={handleVerifyCode}>Подтвердить</button>
-              <button onClick={handleCancelRegistration}>Отмена регистрации</button>
+              <button onClick={handleCancelRegistration}>Отмена</button>
             </div>
             {verificationError && (
               <span className="error" style={{ display: "block", marginTop: "10px" }}>

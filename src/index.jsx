@@ -37,7 +37,7 @@ const Index = () => {
           <ul className="imgs">
             <li><img src={hm} alt="#" /></li>
             <li onClick={() => navigate("/acc")}><img src={acc} alt="#" /></li>
-            <li><img src={plus} alt="#" /></li>
+            <li onClick={() => navigate("/glob")}><img src={plus} alt="#" /></li>
             <li><img src={sh} alt="#" /></li>
             <li><img src={sub} alt="#" /></li>
           </ul>
@@ -56,7 +56,7 @@ const Index = () => {
             </>
           )}
           {user && (
-            <button className="create">
+            <button className="create" onClick={() => navigate("/glob")}>
               <p>Создать</p>
               <img src={pluss} alt="#" />
             </button>

@@ -9,8 +9,15 @@ const userSchema = new mongoose.Schema({
   status_sub: { type: String, default: "Гость" },
   confirmationCode: { type: String },
   confirmationCodeExpires: { type: Date },
+  // Добавляем поле для фото профиля
+  profilePicture: { type: String, default: "" },
+  // Поле collection – массив ObjectId, ссылающихся на модель Block
+  collection: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Block",
+    default: []
+  }
 });
 
 const User = mongoose.model('User', userSchema);
-
 module.exports = User;

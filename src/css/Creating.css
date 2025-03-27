@@ -1,0 +1,816 @@
+.all_cr {
+  color: #2b2b2b; 
+  background-color: #F9F9F9;
+  min-height: 100vh;
+  display: flex;
+}
+
+.user_img {
+  width: 55px;
+  height: 55px;
+}
+
+.user_data {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.left_cr {
+  border-right: 1px solid #2b2b2b33;
+  width: 300px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 30px;
+}
+
+.left_cr ul {
+  font-size: 18px;
+  list-style: none;
+  padding-top: 30px;
+}
+
+.left_cr ul li {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 18px;
+  transition: 0.3s;
+}
+
+.left_cr ul li img {
+  width: 20px;
+}
+
+.left_cr ul li:hover {
+  transform: scale(1.01);
+}
+
+.zag {
+  font-size: 18px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.right_cr {
+  width: 100%;
+}
+
+.right_top_cr {
+  border-bottom: 1px solid #2b2b2b33;
+  width: 100%;
+  padding-left: 15px;
+}
+
+.right_bottom_cr {
+  display: flex;
+  flex-direction: column;
+  max-width: 1550px;
+  margin-top: 30px;
+  margin-left: 15px;
+  overflow-y: auto; /* Добавляем прокрутку, если контента много */
+}
+
+.buttons_for_cr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.create_btns {
+  display: flex;
+  gap: 80px;
+  margin-left: 15px;
+}
+
+.new_project,
+.new_block {
+  background-color: white;
+  padding: 25px 15px;
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 15px;
+  transition: 0.3s;
+  border: 1px solid transparent;
+}
+
+.new_project:hover,
+.new_block:hover {
+  border: 1px solid #2b2b2b; 
+  border-radius: 0px;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  width: 350px;
+  justify-content: space-between;
+  background-color: white;
+  border-radius: 15px;
+  padding: 0px 0px;
+  height: 50px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.search input {
+  border: none;
+  outline: none;
+  width: 230px;
+  font-size: 16px;
+}
+
+.search img {
+  cursor: pointer;
+}
+
+.img_nn {
+  display: flex;
+  margin: 100px auto;
+}
+
+.pols {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pols div {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Вместо .pols div textarea — используем .my-textarea */
+.my-textarea {
+  width: 480px;
+  height: 350px;
+  resize: none;
+  padding: 10px;
+  font-size: 15px;
+  border: none;
+  color: #2b2b2b;
+  border-radius: 10px;
+  outline: none;
+}
+
+.my-textarea::placeholder {
+  color: #2b2b2b;
+}
+
+.save_block {
+  padding: 15px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  color: #f9f9f9;
+  background-color: #2b2b2b;
+  border: 1px solid #2b2b2b;
+  border-radius: 15px;
+  transition: 0.3s;
+  width: 250px;
+}
+
+.save_block:hover {
+  border-radius: 0px;
+}
+
+.sss {
+  margin-bottom: 50px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.sss input {
+  border: 1px solid transparent;
+  background-color: white;
+  padding: 10px 15px;
+  width: 300px;
+  outline: none;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}
+
+.metka {
+  height: 25px;
+  width: 25px;
+}
+
+.pols label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Пример стилей для модального окна */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.modal-content button {
+  margin-top: 10px;
+  border: 1px solid transparent;
+}
+
+/* Стили для контейнера textarea с кнопкой расширения */
+.textarea-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.textarea-wrapper {
+  position: relative;
+}
+
+/* Убираем стили, которые напрямую влияют на любую textarea.
+   Вместо этого используйте .my-textarea, чтобы не затронуть Monaco. */
+
+/* .textarea-wrapper textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  resize: vertical;
+} */
+
+.expand-btn {
+  position: absolute;
+  top: 5px;
+  right: 25px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+/* Стили для полноэкранного редактора */
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-editor {
+  background: #fff;
+  width: 90%;
+  height: 90%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+}
+
+.fullscreen-editor .editor-label {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.fullscreen-textarea {
+  flex: 1;
+  width: 100%;
+  padding: 10px;
+  resize: none;
+  outline: none;
+  border: 1px solid #2b2b2b;
+  border-radius: 5px;
+}
+
+.confirm-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  align-self: flex-end;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background-color: #2b2b2b;
+  color: #f9f9f9;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.confirm-button:hover {
+  border-radius: 0px;
+}
+
+.for_crr {
+  border-bottom: 1px solid #2b2b2b33;
+  padding-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.for_sp {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.block-list {
+  margin-top: 10px;
+}
+
+/* .preview-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+} */
+
+.block-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin-top: 30px;
+  font-size: 30px;
+}
+
+.block-preview p {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.my_projects {
+  margin-top: 50px;
+}
+
+.project-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 10px;
+  margin-bottom: 20px;
+  background-color: white;
+  color: #2b2b2b;
+  font-size: 18px;
+  border-radius: 15px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: 0.3s;
+}
+
+.project-item:hover {
+  border-radius: 0px;
+  border: 1px solid #2b2b2b;
+}
+
+.del {
+  color: #2b2b2b;
+  border: 1px solid #2b2b2b;
+  border-radius: 10px;
+  padding: 10px 20px;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-bottom: 20px;
+}
+
+.del:hover {
+  border-radius: 0px;
+  color: #F9F9F9;
+  background-color: #2b2b2b;
+}
+
+.for_lab {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.for_lab input {
+  font-size: 16px;
+  width: 300px;
+  border: 1px solid #2b2b2b33;
+  color: #2b2b2b;
+  outline: none;
+  border-radius: 15px;
+  padding: 10px 10px;
+}
+
+.preview-btn {
+  cursor: pointer;
+  background-color: #2b2b2b;
+  color: #F9F9F9;
+  font-size: 16px;
+  border-radius: 15px;
+  padding: 10px 10px;
+}
+
+.save-btn {
+  cursor: pointer;
+  background-color: #2b2b2b;
+  color: #F9F9F9;
+  font-size: 16px;
+  border-radius: 15px;
+  padding: 10px 10px;
+}
+
+.project-details {
+  display: flex;
+}
+
+.project-item button {
+  padding: 10px 15px;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+  background-color: #2b2b2b;
+  color: white;
+  cursor: pointer;
+}
+
+.anav ul {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+  font-size: 18px;
+}
+
+.anav li {
+  cursor: pointer;
+  transition: 0.3s;
+  color: #2b2b2b;
+}
+
+.anav li:hover {
+  color: #2b2b2b94;
+}
+
+.block_nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+}
+
+.block_control {
+  display: flex;
+  gap: 30px;
+}
+
+.block_control img {
+  height: 25px;
+  opacity: 70%;
+  cursor: pointer;
+}
+
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-container .tooltip {
+  visibility: hidden;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* положение сверху */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.tooltip-container:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.mmm {
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+  gap: 50px;
+}
+
+ul.ul_for_cr li {
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+ul.ul_for_cr li.active {
+  transform: translateX(10px);
+  text-decoration: underline;
+}
+
+.for_bl {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 10px;
+}
+
+.editor-container {
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+}
+
+.fullSize{
+  height: 18px;
+}
+
+.preview-container{
+  margin-top: 50px;
+  margin-bottom: 100px;
+}
+
+.upload-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.upload-modal {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 600px;
+  width: 100%;
+  cursor: pointer;
+}
+.upload-modal img{
+  width: 150px;
+  opacity: 10%;
+}
+
+.hhuo{
+  margin-bottom: 50px;
+}
+.forfile{
+  font-size: 18px;
+}
+.file-input-container{
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  color: #2b2b2b;
+}
+.file-upload-label img{
+  width: 20px;
+}
+.file-upload-label{
+  color: #2b2b2b;
+  display: flex;
+  gap: 10px;
+  border: 1px solid #2b2b2b;
+  max-width: 200px;
+  border-radius: 10px;
+  padding: 10px 10px;
+  cursor: pointer;
+  text-align: center;
+  justify-content: space-between;
+  transition: .3s;
+}
+.file-upload-label:hover{
+  border-radius: 0px;
+}
+
+.inf{
+  width: 20px;
+}
+.ssilka{
+  color: rgb(20, 114, 255);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+  cursor: default;
+  margin-left: 5px; /* отступ между иконками */
+}
+.tooltip-container::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%; /* положение сверху */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2b2b2b;
+  color: #f9f9f9;
+  padding: 5px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s;
+  z-index: 100;
+  font-size: 14px;
+  white-space: normal;
+  width: 300px;
+}
+.tooltip-container:hover::after {
+  opacity: 1;
+}
+
+.keywords-input-container {
+  margin: 50px 0;
+}
+.keywords-input-container label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  display: block;
+}
+.keywords-input-container input {
+  max-width: 1000px;
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+.df{
+  display: flex;
+}
+
+/* Контейнер для карточек: 3 в ряд, с вертикальным отступом 50px между строками */
+.market-blocks-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;       /* расстояние между карточками по горизонтали */
+  row-gap: 50px;   /* вертикальный отступ между строками */
+  padding: 10px;
+}
+
+.market-block-card {
+  width: 350px;
+  height: 250px;
+  position: relative;
+  background-color: #fff;
+  transition: .3s;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.market-block-card:hover{
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  transform: scale(1.01);
+}
+
+
+/* Превью-изображение */
+.market-block-image {
+  width: 350px;
+  height: 200px; /* уменьшена до 200px */
+  background-color: #333;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: absolute;
+  transition: transform 0.3s;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px; 
+}
+
+/* Название блока (снизу, в 50px оставшихся) */
+.market-block-name {
+  position: absolute;
+  bottom: 10px;
+  left: 15px;
+  font-size: 18px;
+  margin: 0;
+}
+.more{
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+}
+/* Кнопка "Добавить" */
+.market-block-add {
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+  cursor: pointer;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background-color: #333;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+/* Пагинация */
+.pagination {
+  margin-top: 30px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pagination button {
+  cursor: pointer;
+  padding: 6px 12px;
+}
+
+.available-blocks-container {
+  margin-top: 20px;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.available-blocks-search {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+  border-radius: 8px;
+}
+
+.available-blocks-list {
+  max-height: 400px; /* Фиксированная высота для скролла */
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.available-block-card {
+  width: 100%; /* Размер карточки можно корректировать */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+}
+
+.available-block-image {
+  width: 100%;
+  height: 100px; /* Высота изображения */
+  background-size: cover;
+  background-position: center;
+}
+
+.available-block-name {
+  font-size: 14px;
+  padding: 5px;
+  text-align: center;
+}

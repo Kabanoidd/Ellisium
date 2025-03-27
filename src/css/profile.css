@@ -1,87 +1,98 @@
-.all_acc{
-    background-color: #F9F9F9;
+.acc_bg{
+    background-image: url(../../public/bgAcc.jpg);
     height: 100vh;
-    color: #2b2b2b;
-    font-size: 22px;
-    padding-top: 100px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding-top: 50px;
 }
-.img_acc{
-    cursor: pointer;
-    width: 200px;
-    height: 200px;
-}
-.fromBD{
-    font-size: 18px;
-    text-decoration: underline;
-}
-.ed_pass{
-    padding: 10px 15px;
+.bg_block{
+    width: 1500px;
+    background-color: rgba(43, 43, 43, 0.15);
+    height: auto;
+    padding: 50px;
     border-radius: 10px;
-    background-color: #2b2b2b;
-    color: #F9F9F9;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    transition: .3s;
-    cursor: pointer;
-    border: 1px solid transparent;
-}
-.ed_pass:hover{
-    border-radius: 0px;
-    border: 1px solid #2b2b2b;
-    background-color: transparent;
     color: #2b2b2b;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+
 }
 
-.logout-button{
-    padding: 10px 15px;
-    background-color: transparent;
-    border: 1px solid #2b2b2b;
-    outline: none;
-    cursor: pointer;
-    font-size: 16px;
+.data_user{
+    height: 700px;
+    background-color: #fff;
+    width: 500px;
     border-radius: 10px;
-    transition: .3s;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    position: relative;
 }
-.logout-button:hover{
-    border-radius: 0px;
-    background-color: #2b2b2b;
-    color: #F9F9F9;
-    border: 1px solid #2b2b2b;
-}
-.name, .mail, .sub{
+.data_user img{
     display: flex;
-    gap: 15px;
-    align-items: center;
-}
-.name, .mail, .sub img{
-    width: 20px;
-    height: 20px;
+    margin: 0 auto;
+    height: 300px;
+    max-width: 500px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     cursor: pointer;
 }
 .data{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    gap: 20px;
+}
+.data p{
+    border-bottom: 1px solid #2b2b2b33;
+    width: 100%;
+    padding-bottom: 5px;
+}
+.bg_block{
+    display: flex;
+    justify-content: space-between;
+}
+.righthtAcc{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.kok{
+    width: 500px;
+    height: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+.svo{
+    width: 500px;
+    height: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+.buttonsAcc{
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
 }
-.profile_btn{
+.buttonsAcc button{
+    font-size: 16px;
+    border-radius: 8px;
+    outline: none;
+    border: 1px solid transparent;
+    padding: 10px;
+    cursor: pointer;
+    color: #f3f3f3;
+    background-color: #2b2b2b;
+    transition: .3s;
+}
+.buttonsAcc button:hover{
+    border-radius: 0px;
+}
+.llla{
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding-top: 20px;
-    max-width: 200px;
-}
-.my_project p{
-    cursor: pointer;
-    transition: .3s;
-}
-.my_project p:hover{
-    color: #2b2b2b8a;
-}
-.support p{
-    cursor: pointer;
-    transition: .3s;
-}
-.support p:hover{
-    color: #2b2b2b8a;
+    flex-direction: row;
+    justify-content: space-between;
 }

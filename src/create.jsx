@@ -1,159 +1,230 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "./for_BlockEditor/Sidebar";
+import FullscreenEditor from "./for_BlockEditor/FullscreenEditor";
+import Preview from "./for_BlockEditor/Preview";
+import Modal from "./for_BlockEditor/Modal";
+import EditorForm from "./for_BlockEditor/EditorForm";
+import FileUploadModal from "./for_BlockEditor/FileUploadModal";
+import KeywordsInput from "./for_BlockEditor/KeywordsInput";
+import {
+  compileSass,
+  detectScssDependencies,
+  loadLibrary,
+  convertHtmlToJson,
+} from "./for_BlockEditor/utils";
+import { parseCssToJson } from "./for_BlockEditor/cssParser";
+import "./css/Creating.css";
+
 const BlockEditor = () => {
   const [user, setUser] = useState(null);
   const [name, setName] = useState("");
   const [html, setHtml] = useState("");
   const [css, setCss] = useState("");
   const [js, setJs] = useState("");
-  const [htmlJson, setHtmlJson] = useState({});
-  const [cssJson, setCssJson] = useState({});
+  const [keywords, setKeywords] = useState(""); // новое состояние для ключевых слов
+  const [errors, setErrors] = useState({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isHtmlFullscreen, setIsHtmlFullscreen] = useState(false);
+  const [isCssFullscreen, setIsCssFullscreen] = useState(false);
+  const [isJsFullscreen, setIsJsFullscreen] = useState(false);
+  const [archiveFile, setArchiveFile] = useState(null);
+  const [previewFile, setPreviewFile] = useState(null);
+  const [archiveFileName, setArchiveFileName] = useState("");
+  const [previewFileName, setPreviewFileName] = useState("");
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    fetch("http://localhost:3002/api/me", { credentials: "include" }) // Отправляем куки
+    fetch("http://localhost:3002/api/me", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Проверка авторизации:", data);
         if (data.user) {
-          setUser(data.user); // Устанавливаем пользователя, если он авторизован
+          setUser(data.user);
         } else {
-          navigate("/"); // Перенаправляем на главную страницу, если пользователь не авторизован
+          navigate("/");
         }
       })
-      .catch((error) => {
-        console.error("Ошибка проверки авторизации:", error);
-        navigate("/"); // Перенаправляем на главную страницу в случае ошибки
-      });
-  }, [navigate]); // Добавляем navigate в зависимости useEffect
+      .catch(() => navigate("/"));
+  }, [navigate]);
 
-  // Функция для выхода из сессии
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("http://localhost:3002/api/logout", {
-        method: "POST",
-        credentials: "include", // Включаем куки
-      });
-
-      if (response.ok) {
-        console.log("Пользователь вышел из системы");
-        setUser(null); // Сбрасываем состояние пользователя
-        navigate("/"); // Перенаправляем на главную страницу
-      } else {
-        console.error("Ошибка при выходе из системы");
-      }
-    } catch (error) {
-      console.error("Ошибка при выходе из системы:", error);
-    }
+  const validateForm = () => {
+    let newErrors = {};
+    if (!name.trim()) newErrors.name = "Поле обязательно к заполнению";
+    if (!html.trim()) newErrors.html = "Поле обязательно к заполнению";
+    if (!previewFile) newErrors.preview = "Фото-превью обязательно";
+    // При необходимости можно добавить валидацию ключевых слов
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
+  const handleSubmit = async () => {
+    if (!user) return;
+    if (!validateForm()) return;
 
-  // Функция для конвертации HTML в JSON
-  const convertHtmlToJson = () => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-  
-    if (!doc.body || !doc.body.firstChild) {
-      setHtmlJson({});
+    const dependencies = detectScssDependencies(css);
+    for (const dep of dependencies) {
+      if (!loadLibrary(dep)) {
+        setErrors((prev) => ({
+          ...prev,
+          css: `Библиотека "${dep}" не найдена. Убедитесь, что она поддерживается.`,
+        }));
+        return;
+      }
+    }
+
+    let compiledCss = "";
+    try {
+      compiledCss = await compileSass(css);
+    } catch (error) {
+      setErrors((prev) => ({ ...prev, css: "Ошибка компиляции SCSS" }));
       return;
     }
-  
-    const convertElement = (element) => {
-      if (!element.tagName) {
-        return element.nodeType === 3 ? element.textContent : {}; // Возвращаем текст или пустой объект
-      }
-  
-      return {
-        tag: element.tagName.toLowerCase(),
-        attributes: [...element.attributes].reduce((acc, attr) => {
-          acc[attr.name] = attr.value;
-          return acc;
-        }, {}),
-        children: [...element.childNodes].map((node) => convertElement(node)), // Рекурсивный вызов
-      };
-    };
-  
-    setHtmlJson(convertElement(doc.body.firstChild));
-  };
-  // Функция для конвертации CSS в JSON
-  const convertCssToJson = () => {
-    const cssRules = css.split("}").filter((rule) => rule.trim() !== "");
-    const jsonStyles = {};
 
-    cssRules.forEach((rule) => {
-      const [selector, properties] = rule.split("{");
-      if (!selector || !properties) return;
+    const newHtmlJson = JSON.stringify(convertHtmlToJson(html));
+    let newCssJson;
+    try {
+      newCssJson = JSON.stringify(parseCssToJson(compiledCss));
+    } catch (error) {
+      setErrors((prev) => ({ ...prev, css: "Ошибка в CSS" }));
+      return;
+    }
 
-      const cleanSelector = selector.trim();
-      const styleObject = properties
-        .trim()
-        .split(";")
-        .filter((prop) => prop.includes(":"))
-        .reduce((acc, prop) => {
-          const [key, value] = prop.split(":").map((item) => item.trim());
-          acc[key] = value;
-          return acc;
-        }, {});
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("structure", newHtmlJson);
+    formData.append("styles", newCssJson);
+    formData.append("script", js);
+    // Добавляем ключевые слова как JSON-массив
+    const keywordsArray = keywords
+      .split(" ")
+      .map((word) => word.trim())
+      .filter((word) => word);
+    formData.append("keywords", JSON.stringify(keywordsArray));
 
-      jsonStyles[cleanSelector] = styleObject;
-    });
+    if (archiveFile) {
+      formData.append("archive", archiveFile);
+    }
+    formData.append("preview", previewFile);
 
-    setCssJson(jsonStyles);
-  };
-
-  // Вызываем преобразования при изменении HTML или CSS
-  useEffect(() => {
-    convertHtmlToJson();
-    convertCssToJson();
-  }, [html, css]);
-
-  // Функция сохранения в БД
-  const saveBlockToDB = async () => {
     try {
       const response = await fetch("http://localhost:3002/api/save-block", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          structure: htmlJson,
-          styles: cssJson,
-          script: js,
-        }),
+        body: formData,
+        credentials: "include",
       });
-
-      const data = await response.json();
-      alert(data.message);
+      const result = await response.json();
+      setModalMessage(result.message);
+      setModalVisible(true);
     } catch (error) {
-      console.error("Ошибка сохранения:", error);
+      console.error("Ошибка сохранения компонента:", error);
     }
   };
 
   return (
-    <div>
-      <h2>Редактор блока</h2>
-      <div>
-        <label>Название блока</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} />
+    <div className="all_cr">
+      <Sidebar user={user} />
+      <div className="right_cr">
+        <div className="right_top_cr">
+          <p className="zag">Создать компонент</p>
+        </div>
+        <div className="right_bottom_cr">
+          <div>
+            <EditorForm
+              name={name}
+              setName={setName}
+              html={html}
+              setHtml={setHtml}
+              css={css}
+              setCss={setCss}
+              js={js}
+              setJs={setJs}
+              errors={errors}
+              onHtmlFullscreen={() => setIsHtmlFullscreen(true)}
+              onCssFullscreen={() => setIsCssFullscreen(true)}
+              onJsFullscreen={() => setIsJsFullscreen(true)}
+              onOpenFileModalArchive={() => setShowArchiveModal(true)}
+              onOpenFileModalPreview={() => setShowPreviewModal(true)}
+              archiveFileName={archiveFileName}
+              previewFileName={previewFileName}
+            />
+            {/* Добавляем компонент для ввода ключевых слов */}
+            <KeywordsInput
+              keywords={keywords}
+              setKeywords={setKeywords}
+              error={errors.keywords}
+            />
+            <button onClick={handleSubmit} className="save_block">
+              Сохранить компонент
+            </button>
+          </div>
+          <Preview html={html} css={css} js={js} />
+        </div>
       </div>
-      <div>
-        <label>HTML</label>
-        <textarea value={html} onChange={(e) => setHtml(e.target.value)} 
-          placeholder="Ваш HTML код"
-          />
-      </div>
-      <div>
-        <label>CSS</label>
-        <textarea value={css} onChange={(e) => setCss(e.target.value)} placeholder="Ваш CSS код"/>
-      </div>
-      <div>
-        <label>JS</label>
-        <textarea value={js} onChange={(e) => setJs(e.target.value)} placeholder="Ваш JS код"/>
-      </div>
-      <button onClick={saveBlockToDB}>Сохранить</button>
 
-      <h3>Предпросмотр:</h3>
-      <div dangerouslySetInnerHTML={{ __html: html }}></div>
+      {modalVisible && (
+        <Modal message={modalMessage} onClose={() => setModalVisible(false)} />
+      )}
+
+      {isHtmlFullscreen && (
+        <FullscreenEditor
+          initialValue={html}
+          onConfirm={(newVal) => {
+            setHtml(newVal);
+            setIsHtmlFullscreen(false);
+          }}
+          onCancel={() => setIsHtmlFullscreen(false)}
+          type="html"
+        />
+      )}
+      {isCssFullscreen && (
+        <FullscreenEditor
+          initialValue={css}
+          onConfirm={(newVal) => {
+            setCss(newVal);
+            setIsCssFullscreen(false);
+          }}
+          onCancel={() => setIsCssFullscreen(false)}
+          type="css"
+        />
+      )}
+      {isJsFullscreen && (
+        <FullscreenEditor
+          initialValue={js}
+          onConfirm={(newVal) => {
+            setJs(newVal);
+            setIsJsFullscreen(false);
+          }}
+          onCancel={() => setIsJsFullscreen(false)}
+          type="js"
+        />
+      )}
+
+      {showArchiveModal && (
+        <FileUploadModal
+          title="Загрузите архив с фотографиями"
+          accept=".zip"
+          onFileSelect={(file) => {
+            setArchiveFile(file);
+            setArchiveFileName(file.name);
+          }}
+          onClose={() => setShowArchiveModal(false)}
+        />
+      )}
+
+      {showPreviewModal && (
+        <FileUploadModal
+          title="Загрузите фото-превью"
+          accept="image/*"
+          onFileSelect={(file) => {
+            setPreviewFile(file);
+            setPreviewFileName(file.name);
+          }}
+          onClose={() => setShowPreviewModal(false)}
+        />
+      )}
     </div>
   );
 };
