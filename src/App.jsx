@@ -11,7 +11,7 @@ import PreviewPage from "./forRender/PreviewPage";
 import ProjectEditor from "./forRender/ProjectEditor";
 import BlockList from "./BlockList";
 import MarketBlocks from "./MarketBlock";
-
+import ViewBlock from "./ViewBlock";
 function App() {
   const [user, setUser] = useState(null);
 
@@ -47,6 +47,7 @@ function App() {
           <Route path="/project-edit/:id" element={<ProjectEditor />} />
           <Route path="/bl" element={<BlockList />} />
           <Route path="/market" element={<MarketBlocks />} />
+          <Route path="/view-block/:id" element={<ViewBlock />} />
         </Routes>
       </div>
     </Router>

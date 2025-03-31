@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./css/Creating.css";
-
-// Импорт изображений и компонентов
+import "./css/MarketBlocks.css"; // стили для карточек и пагинации
 import search from "../public/search.png";
-import pub from "../public/public.png";
-import trash from "../public/trash.png";
-import BlockSandbox from "./forRender/BlockSandbox";
 import Sidebar from "./for_BlockEditor/Sidebar";
+import BlockDetailsModal from "./forMarket/BlockDetailsModal";
 
 const BlockList = () => {
   const navigate = useNavigate();
@@ -17,11 +14,12 @@ const BlockList = () => {
   const [loadingBlocks, setLoadingBlocks] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all"); // "all", "mine", "added"
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15; // Шаг пагинации = 15
 
-  // Состояния для модального окна подтверждения
+  // Состояния для модального окна деталей блока
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalAction, setModalAction] = useState(""); // "delete" или "publish"
-  const [currentBlock, setCurrentBlock] = useState(null);
+  const [selectedBlock, setSelectedBlock] = useState(null);
 
   // Получаем данные пользователя
   useEffect(() => {
@@ -31,7 +29,6 @@ const BlockList = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("Данные пользователя:", data);
         if (data && data.user) {
           setUser(data.user);
         } else {
@@ -52,7 +49,6 @@ const BlockList = () => {
       .then((data) => {
         const blocksArray = Array.isArray(data) ? data : [];
         setBlocks(blocksArray);
-        console.log("Загруженные блоки:", blocksArray);
       })
       .catch((error) => {
         console.error("Ошибка при загрузке блоков:", error);
@@ -63,32 +59,26 @@ const BlockList = () => {
   if (loadingUser || loadingBlocks) return <p>Загрузка...</p>;
   if (!user) return <p>Ошибка: пользователь не найден</p>;
 
-  // Фильтруем блоки по поисковой строке
+  // Фильтрация по поисковой строке
   const filteredBlocks = blocks.filter((block) =>
     block.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  console.log("Отфильтрованные блоки:", filteredBlocks);
 
   // Для сравнения ID используем user._id или user.id
   const currentUserId = user._id || user.id;
-  console.log("User ID для сравнения:", currentUserId);
 
   // "Мои блоки": блоки, созданные пользователем
   const myBlocks = filteredBlocks.filter(
     (block) => String(block.userId) === String(currentUserId)
   );
-  console.log("Мои блоки:", myBlocks);
 
-  // "Добавленные блоки": блоки, ID которых содержится в user.collection
+  // "Добавленные блоки": блоки, ID которых содержатся в user.collection
   const userCollection = user.collection && Array.isArray(user.collection)
     ? user.collection
     : [];
-    const addedBlocks = filteredBlocks.filter((block) =>
-        userCollection.some(
-          (blockId) => String(blockId) === String(block._id)
-        )
-      );
-  console.log("Добавленные блоки:", addedBlocks);
+  const addedBlocks = filteredBlocks.filter((block) =>
+    userCollection.some((blockId) => String(blockId) === String(block._id))
+  );
 
   // "Все" блоки: объединяем "Мои" и "Добавленные" без дубликатов
   const allBlocks = [
@@ -100,7 +90,6 @@ const BlockList = () => {
         )
     ),
   ];
-  console.log("Все доступные блоки:", allBlocks);
 
   let displayedBlocks = [];
   if (activeTab === "mine") {
@@ -110,71 +99,40 @@ const BlockList = () => {
   } else {
     displayedBlocks = allBlocks;
   }
-  console.log("Отображаемые блоки:", displayedBlocks);
 
-  // Функция открытия модального окна для подтверждения действия
-  const openModal = (action, block) => {
-    setModalAction(action);
-    setCurrentBlock(block);
+  // Пагинация
+  const totalPages = Math.ceil(displayedBlocks.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedBlocks = displayedBlocks.slice(startIndex, endIndex);
+
+  // Обработчик клика по карточке — открывает модальное окно с деталями блока
+  const openDetailsModal = (block) => {
+    setSelectedBlock(block);
     setModalVisible(true);
   };
 
   const closeModal = () => {
     setModalVisible(false);
-    setModalAction("");
-    setCurrentBlock(null);
-  };
-
-  // Функция для удаления блока
-  const handleDelete = () => {
-    if (!currentBlock) return;
-    fetch(`http://localhost:3002/api/blocks/${currentBlock._id}`, {
-      method: "DELETE",
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Ошибка удаления блока");
-        return res.json();
-      })
-      .then(() => {
-        alert("Блок удалён!");
-        setBlocks((prev) =>
-          prev.filter((b) => String(b._id) !== String(currentBlock._id))
-        );
-        closeModal();
-      })
-      .catch((err) => {
-        console.error("Ошибка удаления блока:", err);
-        alert("Ошибка удаления блока: " + err.message);
-      });
+    setSelectedBlock(null);
   };
 
   // Функция для публикации блока
   const handlePublish = () => {
-    if (!currentBlock || !currentBlock._id) {
-      console.error("Ошибка: блок не выбран или не имеет ID");
-      return;
-    }
-    const url = `http://localhost:3002/api/blocks/${currentBlock._id}/publish`;
-    console.log("Отправка запроса на публикацию блока с ID:", currentBlock._id);
-
-    fetch(url, {
+    if (!selectedBlock || !selectedBlock._id) return;
+    fetch(`http://localhost:3002/api/blocks/${selectedBlock._id}/publish`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     })
       .then((res) => {
-        if (!res.ok) {
-          console.error(`Ошибка сервера ${res.status}: ${res.statusText}`);
-          throw new Error("Ошибка публикации блока");
-        }
+        if (!res.ok) throw new Error("Ошибка публикации блока");
         return res.json();
       })
       .then((data) => {
-        console.log("Успешно опубликовано:", data);
         setBlocks((prev) =>
           prev.map((b) =>
-            String(b._id) === String(currentBlock._id)
+            String(b._id) === String(selectedBlock._id)
               ? { ...b, published: true }
               : b
           )
@@ -187,15 +145,35 @@ const BlockList = () => {
       });
   };
 
+  // Функция для удаления блока
+  const handleDelete = () => {
+    if (!selectedBlock) return;
+    fetch(`http://localhost:3002/api/blocks/${selectedBlock._id}`, {
+      method: "DELETE",
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Ошибка удаления блока");
+        return res.json();
+      })
+      .then(() => {
+        setBlocks((prev) =>
+          prev.filter((b) => String(b._id) !== String(selectedBlock._id))
+        );
+        closeModal();
+      })
+      .catch((err) => {
+        console.error("Ошибка удаления блока:", err);
+        alert("Ошибка удаления блока: " + err.message);
+      });
+  };
+
   return (
     <div className="all_cr">
-      {/* Левая колонка: пользовательские данные и навигация */}
       <Sidebar user={user} />
-      {/* Правая колонка: список блоков и фильтрация */}
       <div className="right_cr">
-        <div className="right_top_cr">
+        <div className="right_top_cr mmm">
           <p className="zag">Мои компоненты</p>
-          <div className="for_bl">
           <div className="search">
             <input
               type="text"
@@ -207,91 +185,70 @@ const BlockList = () => {
           </div>
           <div className="anav">
             <ul>
-              <li
-                onClick={() => setActiveTab("all")}
-                className={activeTab === "all" ? "active" : ""}
-              >
+              <li onClick={() => setActiveTab("all")} className={activeTab === "all" ? "active" : ""}>
                 Все
               </li>
-              <li
-                onClick={() => setActiveTab("mine")}
-                className={activeTab === "mine" ? "active" : ""}
-              >
+              <li onClick={() => setActiveTab("mine")} className={activeTab === "mine" ? "active" : ""}>
                 Мои блоки
               </li>
-              <li
-                onClick={() => setActiveTab("added")}
-                className={activeTab === "added" ? "active" : ""}
-              >
+              <li onClick={() => setActiveTab("added")} className={activeTab === "added" ? "active" : ""}>
                 Добавленные блоки
               </li>
             </ul>
           </div>
-          </div>
         </div>
         <div className="right_bottom_cr">
-          <div className="mblocks">
-            {displayedBlocks.length > 0 ? (
-              displayedBlocks.map((block) => (
-                <div key={block._id} className="block-preview">
-                  <div className="block_nav">
-                    <p>{block.name}</p>
-                    <div className="block_control">
-                      <div className="tooltip-container">
-                        <img
-                          src={pub}
-                          alt="Опубликовать"
-                          onClick={() => openModal("publish", block)}
-                        />
-                        <span className="tooltip">Опубликовать</span>
-                      </div>
-                      <div className="tooltip-container">
-                        <img
-                          src={trash}
-                          alt="Удалить"
-                          onClick={() => openModal("delete", block)}
-                        />
-                        <span className="tooltip">Удалить</span>
-                      </div>
-                    </div>
+          <div className="market-blocks-container">
+            {paginatedBlocks.length > 0 ? (
+              paginatedBlocks.map((block) => {
+                const previewUrl = block.preview?.data
+                  ? `data:${block.preview.contentType};base64,${btoa(
+                      new Uint8Array(block.preview.data.data).reduce(
+                        (data, byte) => data + String.fromCharCode(byte),
+                        ""
+                      )
+                    )}`
+                  : "";
+                return (
+                  <div
+                    key={block._id}
+                    className="market-block-card"
+                    onClick={() => openDetailsModal(block)}
+                  >
+                    <div
+                      className="market-block-image"
+                      style={{ backgroundImage: `url(${previewUrl})` }}
+                    />
+                    <p className="market-block-name">{block.name}</p>
                   </div>
-                  <BlockSandbox
-                    html={block.structure}
-                    css={block.styles}
-                    js={block.script}
-                  />
-                </div>
-              ))
+                );
+              })
             ) : (
               <p>Нет блоков для отображения</p>
             )}
           </div>
-        </div>
-      </div>
-
-      {/* Модальное окно подтверждения */}
-      {modalVisible && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            {modalAction === "delete" && (
-              <p>Вы действительно хотите удалить этот блок?</p>
-            )}
-            {modalAction === "publish" && (
-              <p>Вы действительно хотите опубликовать этот блок?</p>
-            )}
-            <div className="modal-buttons">
-              <button
-                onClick={() =>
-                  modalAction === "delete" ? handleDelete() : handlePublish()
-                }
-              >
-                Да
-              </button>
-              <button onClick={closeModal}>Нет</button>
-            </div>
+          <div className="pagination">
+            <button onClick={() => setCurrentPage((prev) => prev - 1)} disabled={currentPage === 1}>
+              Назад
+            </button>
+            <span>
+              Страница {currentPage} из {totalPages}
+            </span>
+            <button onClick={() => setCurrentPage((prev) => prev + 1)} disabled={currentPage === totalPages}>
+              Далее
+            </button>
           </div>
         </div>
-      )}
+      </div>
+      {modalVisible && selectedBlock && (
+  <BlockDetailsModal
+    block={selectedBlock}
+    onClose={closeModal}
+    onPublish={() => handlePublish(selectedBlock)}
+    onDelete={() => handleDelete(selectedBlock)}
+    context="BlockList"
+  />
+)}
     </div>
   );
 };

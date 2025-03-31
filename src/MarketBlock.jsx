@@ -196,14 +196,15 @@ const MarketBlocks = () => {
           </div>
         </div>
       </div>
-      {showDetailsModal && selectedBlock && (
-        <BlockDetailsModal
-          block={selectedBlock}
-          onClose={() => setShowDetailsModal(false)}
-          onViewCode={() => handleViewCode(selectedBlock)}
-          onAdd={() => handleAddBlock(selectedBlock)}
-        />
-      )}
+      {modalVisible && selectedBlock && (
+  <BlockDetailsModal
+    block={selectedBlock}
+    onClose={closeModal}
+    onAdd={() => handleAdd(selectedBlock)}
+    context="MarketBlocks"
+  />
+)}
+
     </div>
   );
 };

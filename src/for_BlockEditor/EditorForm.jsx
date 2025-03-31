@@ -56,7 +56,7 @@ const EditorForm = ({
           onChange={(e) => setName(e.target.value)}
         />
         {errors.name && <p className="error">{errors.name}</p>}
-        {/* Info icon с подсказкой для названия */}
+        {/* Info icon с подсказкой для названия можно добавить здесь */}
       </div>
 
       {/* Блок для загрузки фото-превью */}
@@ -64,12 +64,14 @@ const EditorForm = ({
         <p className="forfile">Фото-превью</p>
         <label className="file-upload-label" onClick={onOpenFileModalPreview}>
           <p>Загрузить</p>
-          <img src={ex} alt="" />
+          <img src={ex} alt="upload" />
         </label>
         {previewFileName && <p className="file-name">{previewFileName}</p>}
         {errors.preview && <p className="error">{errors.preview}</p>}
-        {/* Info icon с подсказкой для фото-превью */}
-        <div className="tooltip-container" data-tooltip="Обязательное поле: выберите фото-превью компонента,  которое в последствии будет его отображать">
+        <div
+          className="tooltip-container"
+          data-tooltip="Обязательное поле: выберите фото-превью компонента, которое в последствии будет его отображать"
+        >
           <img src={inf} alt="info" className="inf" />
         </div>
       </div>
@@ -79,11 +81,13 @@ const EditorForm = ({
         <p className="forfile">Архив с фотографиями для проекта</p>
         <label className="file-upload-label" onClick={onOpenFileModalArchive}>
           <p>Загрузить</p>
-          <img src={ex} alt="" />
+          <img src={ex} alt="upload" />
         </label>
         {archiveFileName && <p className="file-name">{archiveFileName}</p>}
-        {/* Info icon с подсказкой для архива */}
-        <div className="tooltip-container" data-tooltip="Опциональное поле: загрузите архив с нужными для проекта фотографиями, если необходимо">
+        <div
+          className="tooltip-container"
+          data-tooltip="Опциональное поле: загрузите архив с фотографиями, если необходимо"
+        >
           <img src={inf} alt="info" className="inf" />
         </div>
       </div>
@@ -93,7 +97,11 @@ const EditorForm = ({
         <div className="textarea-container">
           <label>
             HTML:
-            <button type="button" className="expand-btn" onClick={onHtmlFullscreen}>
+            <button
+              type="button"
+              className="expand-btn"
+              onClick={onHtmlFullscreen}
+            >
               &#x26F6;
             </button>
           </label>
@@ -112,7 +120,11 @@ const EditorForm = ({
         <div className="textarea-container">
           <label>
             CSS:
-            <button type="button" className="expand-btn" onClick={onCssFullscreen}>
+            <button
+              type="button"
+              className="expand-btn"
+              onClick={onCssFullscreen}
+            >
               &#x26F6;
             </button>
           </label>
@@ -131,7 +143,11 @@ const EditorForm = ({
         <div className="textarea-container">
           <label>
             JavaScript:
-            <button type="button" className="expand-btn" onClick={onJsFullscreen}>
+            <button
+              type="button"
+              className="expand-btn"
+              onClick={onJsFullscreen}
+            >
               &#x26F6;
             </button>
           </label>
@@ -145,8 +161,11 @@ const EditorForm = ({
           />
         </div>
       </div>
+
       <p>
-        Внимание! При использовании сторонних библиотек могут происходить проблемы с совместимостью. Для просмотра полного списка поддерживаемых библиотек перейдите по <span className="ssilka">ссылке</span>
+        Внимание! При использовании сторонних библиотек могут происходить
+        проблемы с совместимостью. Для просмотра полного списка поддерживаемых
+        библиотек перейдите по <span className="ssilka">ссылке</span>
       </p>
     </div>
   );
